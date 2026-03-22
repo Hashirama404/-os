@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trading OS Pro — Game Edition</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0c0c0c;font-family:system-ui,-apple-system,sans-serif;min-height:100vh}
+.wrap{display:grid;grid-template-columns:195px 1fr 185px;min-height:100vh;background:#0c0c0c}
+.col{display:flex;flex-direction:column}
+
+.lnav{background:#111;border-right:1px solid #1c1c1c;position:sticky;top:0;height:100vh;overflow-y:auto}
+.lnav-top{padding:18px 14px 14px}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.brand-icon{width:38px;height:38px;border-radius:50%;border:2px solid #e87c2a;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.brand-name{font-size:13px;font-weight:600;color:#fff;line-height:1.2}
+.brand-sub{font-size:10px;color:#444;margin-top:1px}
+.sec-hd{font-size:9px;font-weight:600;color:#333;letter-spacing:.1em;text-transform:uppercase;padding:10px 14px 4px}
+.ni{display:flex;align-items:center;gap:9px;padding:7px 14px;font-size:12px;color:#555;cursor:pointer;border-left:2px solid transparent;transition:all .15s;line-height:1.2;text-decoration:none}
+.ni.on{color:#e87c2a;border-left-color:#e87c2a;background:rgba(232,124,42,.07)}
+.ni:hover:not(.on){color:#888;background:rgba(255,255,255,.03)}
+.ni svg{flex-shrink:0;width:13px;height:13px;opacity:.8}
+.div{height:1px;background:#1a1a1a;margin:5px 0}
+.lnav-bot{margin-top:auto;padding:12px 14px;border-top:1px solid #1a1a1a}
+.pnl-card{background:#181818;border-radius:7px;padding:10px 12px}
+.pnl-lbl{font-size:9px;color:#3a3a3a;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+.pnl-val{font-size:21px;font-weight:600;color:#e87c2a;line-height:1}
+.pnl-sub{display:flex;justify-content:space-between;margin-top:5px;font-size:10px;color:#3a3a3a}
+.pnl-sub span:last-child{color:#555}
+
+.main{background:#0f0f0f;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;background:#111;border-bottom:1px solid #1c1c1c;padding:0 16px;flex-shrink:0;position:sticky;top:0;z-index:10}
+.tab{padding:12px 13px;font-size:12px;color:#444;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.tab.on{color:#e87c2a;border-bottom-color:#e87c2a}
+.tab:hover:not(.on){color:#777}
+.filters{display:flex;gap:5px;padding:9px 16px;border-bottom:1px solid #1c1c1c;flex-wrap:wrap;background:#0f0f0f}
+.fc{padding:4px 10px;border-radius:20px;font-size:11px;border:1px solid #222;color:#444;cursor:pointer;background:#181818;transition:all .15s}
+.fc.on,.fc:hover{border-color:#e87c2a;color:#e87c2a;background:rgba(232,124,42,.05)}
+
+.chart-area{padding:18px 18px 10px}
+.chart-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.bal{font-size:28px;font-weight:600;color:#fff;line-height:1}
+.bal-sub{font-size:11px;color:#3a3a3a;margin-top:3px}
+.up-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(46,160,67,.1);color:#3fb950;border:1px solid rgba(46,160,67,.2);font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px}
+.chart-wrap{position:relative;width:100%;height:240px}
+
+.ctabs{display:flex;gap:5px;padding:10px 18px;border-top:1px solid #1c1c1c}
+.ct{padding:5px 12px;border-radius:5px;font-size:11px;cursor:pointer;border:1px solid #1e1e1e;color:#444;background:#181818;transition:all .15s}
+.ct.on{background:#e87c2a;color:#fff;border-color:#e87c2a}
+
+.th-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr;padding:7px 18px;border-bottom:1px solid #1c1c1c;gap:6px}
+.th{font-size:10px;font-weight:600;color:#2e2e2e;text-transform:uppercase;letter-spacing:.07em}
+.tr-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr;padding:9px 18px;border-bottom:1px solid #141414;gap:6px;cursor:pointer;transition:background .12s}
+.tr-row:hover{background:#161616}
+.td{font-size:12px;color:#666;display:flex;align-items:center}
+.td.name{color:#aaa;font-weight:500}
+.badge{padding:2px 7px;border-radius:4px;font-size:10px;font-weight:500}
+.bw{background:rgba(46,160,67,.1);color:#3fb950}
+.bl{background:rgba(248,81,73,.1);color:#f85149}
+.bb{background:rgba(255,200,60,.08);color:#d4a017}
+.pos{color:#3fb950;font-weight:500}
+.neg{color:#f85149;font-weight:500}
+.wr-wrap{display:flex;align-items:center;gap:5px;width:100%}
+.wr-bar{flex:1;height:3px;background:#1e1e1e;border-radius:2px;overflow:hidden}
+.wr-f{height:100%;background:#e87c2a;border-radius:2px}
+
+.rnav{background:#0f0f0f;border-left:1px solid #1c1c1c;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.rn-sec{padding:14px 13px 10px;border-bottom:1px solid #1c1c1c}
+.rn-hd{font-size:9px;font-weight:600;color:#2e2e2e;text-transform:uppercase;letter-spacing:.09em;margin-bottom:10px}
+.qb{display:flex;align-items:center;gap:7px;padding:7px 9px;border-radius:5px;border:1px solid #1c1c1c;font-size:11px;color:#555;background:#181818;cursor:pointer;margin-bottom:5px;transition:all .12s;width:100%;text-align:left}
+.qb:hover{border-color:#2a2a2a;color:#aaa;background:#1d1d1d}
+.qi{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;font-weight:600}
+.qo{background:rgba(232,124,42,.15);color:#e87c2a}
+.qg{background:rgba(46,160,67,.12);color:#3fb950}
+.qb2{background:rgba(56,139,253,.1);color:#388bfd}
+.qp{background:rgba(188,140,255,.1);color:#bc8cff}
+.qr{background:rgba(248,81,73,.1);color:#f85149}
+.tb{display:flex;align-items:center;gap:7px;padding:7px 9px;border-radius:5px;font-size:11px;color:#444;cursor:pointer;transition:all .12s;background:none;border:none;width:100%;text-align:left}
+.tb:hover{background:#181818;color:#aaa}
+.ti{width:22px;height:22px;border-radius:5px;border:1px solid #1c1c1c;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nb{background:#181818;color:#e87c2a;padding:6px 9px;border-radius:5px;font-size:11px;margin-bottom:5px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border:1px solid #222}
+.note{padding:5px 2px;font-size:11px;color:#2e2e2e;cursor:pointer;transition:color .12s;display:flex;align-items:center;gap:6px}
+.note:hover{color:#666}
+.note::before{content:'';width:3px;height:3px;border-radius:50%;background:#2e2e2e;flex-shrink:0}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 13px 10px}
+.stat-card{background:#181818;border-radius:6px;padding:8px 10px}
+.stat-lbl{font-size:9px;color:#333;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.stat-val{font-size:16px;font-weight:600;color:#aaa}
+.stat-val.g{color:#3fb950}
+.stat-val.o{color:#e87c2a}
+
+/* Notion links */
+a.ni{color:#555}
+a.qb-link{display:flex;align-items:center;gap:7px;padding:7px 9px;border-radius:5px;border:1px solid #1c1c1c;font-size:11px;color:#555;background:#181818;cursor:pointer;margin-bottom:5px;text-decoration:none;transition:all .12s;width:100%}
+a.qb-link:hover{border-color:#2a2a2a;color:#aaa}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- LEFT NAVIGATION -->
+<div class="col lnav">
+  <div class="lnav-top">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg width="18" height="18" viewBox="0 0 18 18"><rect x="1" y="9" width="3" height="8" fill="#e87c2a" rx="1"/><rect x="5.5" y="5" width="3" height="12" fill="#e87c2a" rx="1" opacity=".7"/><rect x="10" y="7" width="3" height="10" fill="#e87c2a" rx="1"/><rect x="14.5" y="2" width="3" height="15" fill="#e87c2a" rx="1" opacity=".85"/></svg>
+      </div>
+      <div><div class="brand-name">Trading OS Pro</div><div class="brand-sub">Game Edition</div></div>
+    </div>
+
+    <div class="sec-hd">Home</div>
+    <a class="ni on" href="https://www.notion.so/32bc59a64e408176aea1d667f2371df0" target="_blank"><svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" fill="#e87c2a"/><rect x="8" y="1" width="5" height="5" rx="1" fill="#e87c2a" opacity=".4"/><rect x="1" y="8" width="5" height="5" rx="1" fill="#e87c2a" opacity=".4"/><rect x="8" y="8" width="5" height="5" rx="1" fill="#e87c2a" opacity=".4"/></svg>Dashboard</a>
+    <a class="ni" href="https://www.notion.so/16db610261944b17ab74aaeeef58df61" target="_blank"><svg viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="2" rx="1" fill="#555"/><rect x="1" y="6" width="12" height="2" rx="1" fill="#555"/><rect x="1" y="10" width="8" height="2" rx="1" fill="#555"/></svg>Journal</a>
+    <a class="ni" href="https://www.notion.so/92fbd709845640c29498042f2c810b4c" target="_blank"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#555" stroke-width="1.3"/><path d="M7 4v3l2 1.5" stroke="#555" stroke-width="1.2" stroke-linecap="round"/></svg>Backtest</a>
+    <a class="ni" href="https://www.notion.so/32bc59a64e4081b7ae84f9e05d1639ab" target="_blank"><svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" stroke="#555" stroke-width="1.3"/><rect x="8" y="1" width="5" height="5" rx="1" stroke="#555" stroke-width="1.3"/><rect x="1" y="8" width="5" height="5" rx="1" stroke="#555" stroke-width="1.3"/><rect x="8" y="8" width="5" height="5" rx="1" stroke="#555" stroke-width="1.3"/></svg>Recap</a>
+    <div class="div"></div>
+    <a class="ni" href="https://www.notion.so/93e5a22786724cd391b7e3b217a24bb1" target="_blank"><svg viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="10" rx="1.5" stroke="#555" stroke-width="1.3"/><path d="M4 7h6M4 9.5h4" stroke="#555" stroke-width="1.1" stroke-linecap="round"/></svg>Accounts</a>
+    <a class="ni" href="https://www.notion.so/a8097fbcaaca43cf9a0436c28ffb247a" target="_blank"><svg viewBox="0 0 14 14" fill="none"><path d="M7 1.5L13 5.5v7H1v-7L7 1.5z" stroke="#555" stroke-width="1.3" stroke-linejoin="round"/></svg>Strategies</a>
+    <a class="ni" href="https://www.notion.so/16db610261944b17ab74aaeeef58df61" target="_blank"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#555" stroke-width="1.3"/><path d="M5 7a2 2 0 104 0 2 2 0 00-4 0z" fill="#555"/></svg>Sessions</a>
+    <a class="ni" href="https://www.notion.so/16db610261944b17ab74aaeeef58df61" target="_blank"><svg viewBox="0 0 14 14" fill="none"><path d="M2 12V7L7 2l5 5v5H2z" stroke="#555" stroke-width="1.3" stroke-linejoin="round"/></svg>Pairs</a>
+    <div class="div"></div>
+
+    <div class="sec-hd">Second Brain</div>
+    <a class="ni" href="https://www.notion.so/fdd31db427d4497a990231c8ab3d7bba" target="_blank"><svg viewBox="0 0 14 14" fill="none"><path d="M7 1.5C4.5 1.5 2.5 3.5 2.5 6c0 1.6.8 3 2 3.8L4 12.5h6l-.5-2.7c1.2-.8 2-2.2 2-3.8 0-2.5-2-4.5-4.5-4.5z" stroke="#555" stroke-width="1.3"/></svg>Knowledge</a>
+    <a class="ni" href="https://www.notion.so/5c0fcdd7ee1440cfb5c24d8b6d0cc112" target="_blank"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="6" r="4" stroke="#555" stroke-width="1.3"/><path d="M3 11.5l1.5-2M11 11.5L9.5 9.5" stroke="#555" stroke-width="1.2" stroke-linecap="round"/></svg>Goals & Quests</a>
+    <a class="ni" href="https://www.notion.so/5c0fcdd7ee1440cfb5c24d8b6d0cc112" target="_blank"><svg viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="1.5" stroke="#555" stroke-width="1.3"/><path d="M5 7l1.5 1.5L9 5" stroke="#555" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Tasks</a>
+    <a class="ni" href="https://www.notion.so/fdd31db427d4497a990231c8ab3d7bba" target="_blank"><svg viewBox="0 0 14 14" fill="none"><path d="M2 2.5h10v8H2z" stroke="#555" stroke-width="1.3" stroke-linejoin="round"/><path d="M4 13h6" stroke="#555" stroke-width="1.3" stroke-linecap="round"/></svg>Notes</a>
+    <a class="ni" href="https://www.notion.so/fdd31db427d4497a990231c8ab3d7bba" target="_blank"><svg viewBox="0 0 14 14" fill="none"><rect x="2" y="1.5" width="10" height="11" rx="1.5" stroke="#555" stroke-width="1.3"/><path d="M4 5h6M4 7.5h4" stroke="#555" stroke-width="1.1" stroke-linecap="round"/></svg>Resources</a>
+    <a class="ni" href="https://www.notion.so/fdd31db427d4497a990231c8ab3d7bba" target="_blank"><svg viewBox="0 0 14 14" fill="none"><rect x="1.5" y="2.5" width="11" height="9" rx="1.5" stroke="#555" stroke-width="1.3"/><path d="M1.5 5.5h11" stroke="#555" stroke-width="1.1"/></svg>Archive</a>
+    <a class="ni" href="https://www.notion.so/16db610261944b17ab74aaeeef58df61" target="_blank"><svg viewBox="0 0 14 14" fill="none"><ellipse cx="7" cy="5.5" rx="4.5" ry="2.5" stroke="#555" stroke-width="1.3"/><path d="M2.5 5.5v3c0 1.4 2 2.5 4.5 2.5s4.5-1.1 4.5-2.5v-3" stroke="#555" stroke-width="1.3"/></svg>Trading DB</a>
+  </div>
+
+  <div class="lnav-bot">
+    <div class="pnl-lbl" style="margin-bottom:6px">PnL / Month</div>
+    <div class="pnl-card">
+      <div class="pnl-lbl">MAR '26</div>
+      <div class="pnl-val" id="sidebar-pnl">+$10,850</div>
+      <div class="pnl-sub"><span>Win Rate</span><span id="sidebar-wr">69% · 13 trades</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CENTRE COLUMN -->
+<div class="col main">
+  <div class="topbar">
+    <div class="tab on"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1 8.5L3.5 5l2 2 2-3 3 4.5" stroke="#e87c2a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>PnL Chart</div>
+    <div class="tab" onclick="window.open('https://www.notion.so/16db610261944b17ab74aaeeef58df61','_blank')"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="1" y="2" width="9" height="7" rx="1" stroke="#444" stroke-width="1.2"/><path d="M1 4.5h9" stroke="#444" stroke-width="1"/></svg>Journal</div>
+    <div class="tab" onclick="window.open('https://www.notion.so/16db610261944b17ab74aaeeef58df61','_blank')"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="1" y="1" width="9" height="9" rx="1" stroke="#444" stroke-width="1.2"/><path d="M4 1v9M7 1v9M1 4h9M1 7h9" stroke="#444" stroke-width=".7" opacity=".4"/></svg>Calendar</div>
+  </div>
+
+  <div class="filters">
+    <div class="fc on">Month</div>
+    <div class="fc">Strategy ▾</div>
+    <div class="fc">Direction ▾</div>
+    <div class="fc">Year ▾</div>
+    <div class="fc">Account ▾</div>
+    <div class="fc">Session ▾</div>
+    <div class="fc">Pair ▾</div>
+  </div>
+
+  <div class="chart-area">
+    <div class="chart-hdr">
+      <div>
+        <div class="bal">$12,495</div>
+        <div class="bal-sub">Accumulated balance · IC Markets Live</div>
+      </div>
+      <div style="text-align:right">
+        <div class="up-badge"><svg width="9" height="9" viewBox="0 0 9 9"><path d="M1.5 7L4.5 2.5l3 4.5" fill="#3fb950"/></svg>+150% since start</div>
+        <div style="font-size:10px;color:#333;margin-top:4px">From $5,000 · Jan 2026</div>
+      </div>
+    </div>
+    <div class="chart-wrap"><canvas id="mc"></canvas></div>
+    <div style="display:flex;gap:16px;margin-top:8px;font-size:10px;color:#333">
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:#e87c2a;display:inline-block"></span>Account balance</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:rgba(232,124,42,.18);display:inline-block"></span>Growth zone</span>
+    </div>
+  </div>
+
+  <div class="ctabs">
+    <div class="ct on">Strategies</div>
+    <div class="ct">Accounts</div>
+    <div class="ct">Sessions</div>
+    <div class="ct">Pairs</div>
+  </div>
+
+  <div class="th-row">
+    <div class="th">Strategy</div>
+    <div class="th">Trades</div>
+    <div class="th">Result</div>
+    <div class="th">PnL</div>
+    <div class="th">Win Rate</div>
+    <div class="th">Avg R:R</div>
+  </div>
+
+  <div class="tr-row"><div class="td name">ICT London Killzone</div><div class="td">4</div><div class="td"><span class="badge bw">WIN</span></div><div class="td pos">+$2,740</div><div class="td"><div class="wr-wrap"><div class="wr-bar"><div class="wr-f" style="width:75%"></div></div><span style="font-size:11px;color:#555;min-width:30px">75%</span></div></div><div class="td" style="color:#888">2.3</div></div>
+  <div class="tr-row"><div class="td name">SMC Trend Continuation</div><div class="td">3</div><div class="td"><span class="badge bw">WIN</span></div><div class="td pos">+$3,094</div><div class="td"><div class="wr-wrap"><div class="wr-bar"><div class="wr-f" style="width:66%"></div></div><span style="font-size:11px;color:#555;min-width:30px">66%</span></div></div><div class="td" style="color:#888">2.5</div></div>
+  <div class="tr-row"><div class="td name">NAS100 Gap Fill</div><div class="td">3</div><div class="td"><span class="badge bw">WIN</span></div><div class="td pos">+$3,770</div><div class="td"><div class="wr-wrap"><div class="wr-bar"><div class="wr-f" style="width:66%"></div></div><span style="font-size:11px;color:#555;min-width:30px">66%</span></div></div><div class="td" style="color:#888">1.8</div></div>
+  <div class="tr-row"><div class="td name">Asian Range Fade</div><div class="td">3</div><div class="td"><span class="badge bb">TESTING</span></div><div class="td pos">+$1,246</div><div class="td"><div class="wr-wrap"><div class="wr-bar"><div class="wr-f" style="width:48%;background:#555"></div></div><span style="font-size:11px;color:#555;min-width:30px">48%</span></div></div><div class="td" style="color:#888">1.6</div></div>
+  <div class="tr-row"><div class="td name">BTCUSD News Trade</div><div class="td">1</div><div class="td"><span class="badge bl">LOSS</span></div><div class="td neg">-$620</div><div class="td"><div class="wr-wrap"><div class="wr-bar"><div class="wr-f" style="width:0"></div></div><span style="font-size:11px;color:#555;min-width:30px">0%</span></div></div><div class="td" style="color:#888">—</div></div>
+  <div class="tr-row"><div class="td name">USDJPY Revenge</div><div class="td">1</div><div class="td"><span class="badge bl">LOSS</span></div><div class="td neg">-$720</div><div class="td"><div class="wr-wrap"><div class="wr-bar"><div class="wr-f" style="width:0"></div></div><span style="font-size:11px;color:#555;min-width:30px">0%</span></div></div><div class="td" style="color:#888">—</div></div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="col rnav">
+  <div class="rn-sec">
+    <div class="rn-hd">Quick Capture</div>
+    <a class="qb-link" href="https://www.notion.so/16db610261944b17ab74aaeeef58df61" target="_blank"><span class="qi qo">+</span> New Trade</a>
+    <a class="qb-link" href="https://www.notion.so/92fbd709845640c29498042f2c810b4c" target="_blank"><span class="qi qo">+</span> New Backtest</a>
+    <a class="qb-link" href="https://www.notion.so/5c0fcdd7ee1440cfb5c24d8b6d0cc112" target="_blank"><span class="qi qg">&#10003;</span> New Task</a>
+    <a class="qb-link" href="https://www.notion.so/fdd31db427d4497a990231c8ab3d7bba" target="_blank"><span class="qi qb2">N</span> New Note</a>
+    <a class="qb-link" href="https://www.notion.so/fdd31db427d4497a990231c8ab3d7bba" target="_blank"><span class="qi qp">R</span> Resource</a>
+    <div style="height:5px"></div>
+    <a class="qb-link" href="https://www.notion.so/93e5a22786724cd391b7e3b217a24bb1" target="_blank"><span class="qi qr">&#8593;</span> Withdrawal</a>
+    <a class="qb-link" href="https://www.notion.so/93e5a22786724cd391b7e3b217a24bb1" target="_blank"><span class="qi qg">&#8595;</span> Deposit</a>
+  </div>
+
+  <div class="rn-sec">
+    <div class="rn-hd">Player Profile</div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-lbl">Rank</div><div class="stat-val o" style="font-size:11px;line-height:1.4">Apprentice</div></div>
+      <div class="stat-card"><div class="stat-lbl">XP</div><div class="stat-val o">1,240</div></div>
+      <div class="stat-card"><div class="stat-lbl">Win Rate</div><div class="stat-val g">69%</div></div>
+      <div class="stat-card"><div class="stat-lbl">Drawdown</div><div class="stat-val" style="color:#aaa">4.2%</div></div>
+    </div>
+  </div>
+
+  <div class="rn-sec">
+    <div class="rn-hd">Tools</div>
+    <button class="tb" onclick="window.open('https://www.notion.so/32bc59a64e4081be96f5e69c48078fac','_blank')"><span class="ti"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 9L3.5 5.5l2 2 2-3 3 4" stroke="#e87c2a" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Chart View</button>
+    <button class="tb" onclick="window.open('https://www.notion.so/16db610261944b17ab74aaeeef58df61','_blank')"><span class="ti"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#555" stroke-width="1.2"/><path d="M6 3v3l1.5 1" stroke="#555" stroke-width="1.1" stroke-linecap="round"/></svg></span>Market Calendar</button>
+    <button class="tb"><span class="ti"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="1" width="10" height="10" rx="1.5" stroke="#555" stroke-width="1.2"/><path d="M4 8.5V4M6 8.5V6.5M8 8.5V5" stroke="#555" stroke-width="1.1" stroke-linecap="round"/></svg></span>Calculators</button>
+  </div>
+
+  <div class="rn-sec" style="flex:1">
+    <div class="rn-hd">Notebook</div>
+    <div class="nb"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="1.5" y="1" width="8" height="9" rx="1" stroke="#e87c2a" stroke-width="1.1"/><path d="M3.5 3.5h4M3.5 5.5h4M3.5 7.5h2.5" stroke="#e87c2a" stroke-width="1" stroke-linecap="round"/></svg> Second Brain <span style="font-size:9px;color:#444">▾</span></div>
+    <a class="note" href="https://www.notion.so/fdd31db427d4497a990231c8ab3d7bba" target="_blank">FVG Explained</a>
+    <a class="note" href="https://www.notion.so/fdd31db427d4497a990231c8ab3d7bba" target="_blank">Order Blocks (OB)</a>
+    <a class="note" href="https://www.notion.so/fdd31db427d4497a990231c8ab3d7bba" target="_blank">Risk — 1% Rule</a>
+    <a class="note" href="https://www.notion.so/fdd31db427d4497a990231c8ab3d7bba" target="_blank">Probability Mindset</a>
+    <a class="note" href="https://www.notion.so/fdd31db427d4497a990231c8ab3d7bba" target="_blank">Market Wizards</a>
+  </div>
+
+  <div style="padding:10px 13px;border-top:1px solid #1c1c1c;margin-top:auto">
+    <div style="font-size:9px;color:#222;text-align:center;letter-spacing:.06em">TRADING OS PRO v1.0</div>
+  </div>
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const labels=['Jan','Feb 1','Feb 8','Feb 15','Mar 2','Mar 5','Mar 10','Mar 11','Mar 13','Mar 17','Mar 18','Mar 20'];
+const vals=[5000,5790,7170,8880,9460,10840,13090,12470,13035,14745,14025,16165];
+new Chart(document.getElementById('mc'),{type:'line',data:{labels,datasets:[{data:vals,borderColor:'#e87c2a',borderWidth:2,pointRadius:(ctx)=>ctx.dataIndex===vals.length-1?5:3,pointBackgroundColor:'#e87c2a',pointBorderColor:'#0c0c0c',pointBorderWidth:1.5,fill:true,backgroundColor:(ctx)=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,220);g.addColorStop(0,'rgba(232,124,42,0.18)');g.addColorStop(1,'rgba(232,124,42,0.01)');return g;},tension:.42}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1a1a',borderColor:'rgba(232,124,42,0.4)',borderWidth:1,titleColor:'#666',bodyColor:'#e87c2a',padding:10,callbacks:{label:c=>' $'+Math.round(c.raw).toLocaleString()}}},scales:{x:{grid:{color:'rgba(255,255,255,0.03)'},ticks:{color:'#333',font:{size:10},maxRotation:35,autoSkip:true,maxTicksLimit:8}},y:{grid:{color:'rgba(255,255,255,0.03)'},ticks:{color:'#333',font:{size:10},callback:v=>'$'+(v/1000).toFixed(0)+'k'},min:4000,max:18000}}}});
+document.querySelectorAll('.fc').forEach(n=>n.addEventListener('click',function(){document.querySelectorAll('.fc').forEach(x=>x.classList.remove('on'));this.classList.add('on');}));
+document.querySelectorAll('.ct').forEach(n=>n.addEventListener('click',function(){document.querySelectorAll('.ct').forEach(x=>x.classList.remove('on'));this.classList.add('on');}));
+document.querySelectorAll('.tab').forEach(n=>n.addEventListener('click',function(){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));this.classList.add('on');}));
+</script>
+</body>
+</html>
